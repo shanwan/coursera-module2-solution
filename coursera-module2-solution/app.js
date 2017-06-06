@@ -6,9 +6,9 @@
   .controller('AlreadyBoughtController', AlreadyBoughtController)
   .service('ShoppingListCheckOffService', ShoppingListCheckOffService)
 
-  ToBuyController.$inject = ['ShoppingListCheckOffService'];
+  ToBuyController.$inject = ['ShoppingListCheckOffService', '$scope'];
 
-  function ToBuyController(ShoppingListCheckOffService) {
+  function ToBuyController(ShoppingListCheckOffService, $scope) {
 
     var toBuy = this;
 
@@ -25,11 +25,14 @@
       ShoppingListCheckOffService.removeItem(index)
     }
 
+    toBuy.addItem = function (index) {
+      ShoppingListCheckOffService.addItem(index)
+    }
   }
 
-  AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
+  AlreadyBoughtController.$inject = ['ShoppingListCheckOffService', '$scope'];
 
-  function AlreadyBoughtController(ShoppingListCheckOffService) {
+  function AlreadyBoughtController(ShoppingListCheckOffService, $scope) {
     var alreadyBought = this;
 
     alreadyBought.items = ShoppingListCheckOffService.getBoughtItems()
@@ -42,7 +45,9 @@
     }
   }
 
-  function ShoppingListCheckOffService() {
+  ShoppingListCheckOffService.$inject = ['$rootScope'];
+
+  function ShoppingListCheckOffService($rootScope) {
     var service = this;
 
     //list of shopping items
@@ -70,6 +75,7 @@
     ];
 
     var boughtItems = [];
+    var pushItem = {};
 
     service.getItemsToBuy = function () {
       return items;
@@ -81,9 +87,11 @@
     }
 
     service.removeItem = function (index) {
-      var pushItem = items.splice(index, 1);
+      pushItem = items.splice(index, 1);
       console.log(pushItem, 'pushItem');
       boughtItems.push(pushItem);
+      console.log(boughtItems, 'bought after removal');
+      console.log(boughtItems[1]);
     }
   }
 })();
